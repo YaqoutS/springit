@@ -18,6 +18,7 @@ public class SpringitApplication {
     @Bean
     CommandLineRunner runner() {
         return args -> {
+            System.out.println("----------------------------------------------------------");
             System.out.println("Printing out all the bean names in the application context");
             System.out.println("----------------------------------------------------------");
             String[] beans = applicationContext.getBeanDefinitionNames();
