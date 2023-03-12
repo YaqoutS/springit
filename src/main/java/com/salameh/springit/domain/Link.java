@@ -8,12 +8,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Link {
+public class Link extends Auditable{
 
     @Id
     @GeneratedValue
@@ -22,7 +23,6 @@ public class Link {
     private String title;
     private String url;
 
-    // comments
     @OneToMany(mappedBy = "link")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>(); //we initialize it because we don't want it to point to null
 }

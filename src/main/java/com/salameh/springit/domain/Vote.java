@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Vote {
+public class Vote extends Auditable{
     @Id
     @GeneratedValue
     private Long id;
