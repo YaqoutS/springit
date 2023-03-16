@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
-    @GetMapping ("/")
-    public String home(Model model, HttpServletRequest request) {
-        model.addAttribute("message", "Hellow World!");
-        return "Hello, Spring Boot 3!";
-    }
+//    @GetMapping ("/")
+//    public String home(Model model, HttpServletRequest request) {
+//        model.addAttribute("message", "Hellow World!");
+//        return "Hello, Spring Boot 3!";
+//    }
 }
