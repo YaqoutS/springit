@@ -4,15 +4,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@RequiredArgsConstructor
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class Link extends Auditable{
 
@@ -21,8 +22,13 @@ public class Link extends Auditable{
     private Long id;
     @NonNull
     private String title;
+    @NonNull
     private String url;
 
     @OneToMany(mappedBy = "link")
     private List<Comment> comments = new ArrayList<>(); //we initialize it because we don't want it to point to null
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
 }
