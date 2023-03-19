@@ -19,8 +19,8 @@ public class SpringitApplication {
         SpringApplication.run(SpringitApplication.class, args);
     }
 
-    @Bean
+    @Bean // we can put this in any configuration class
     PrettyTime prettyTime() {
-        return new PrettyTime();
+        return new PrettyTime(); //we only need one instance of PrettyTime. We don't need a new instance everytime we ask for it.
     }
 }

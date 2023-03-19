@@ -6,8 +6,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BeanUtil implements ApplicationContextAware {
+public class BeanUtil implements ApplicationContextAware { // this interface allows us to get to the application context
 
+    // this class will get reference to the application context
     private static ApplicationContext context;
 
     @Override
