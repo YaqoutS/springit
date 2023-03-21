@@ -21,16 +21,19 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
-                //.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/").permitAll();
-                    auth.requestMatchers("/link/submit").hasRole("USER");
                     auth.requestMatchers(EndpointRequest.to("info")).permitAll();
-                    auth.requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN");
-                    auth.requestMatchers("/actuator/").hasRole("ADMIN");
+                    auth.requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ACTUATOR");
+                    auth.requestMatchers("/actuator/").hasRole("ACTUATOR");
+                    auth.requestMatchers("/link/submit").hasRole("USER");
+                    auth.requestMatchers("/link/**").permitAll();
+                    auth.requestMatchers("/").permitAll();
+                    auth.requestMatchers("/h2-console/**").permitAll();
                     auth.anyRequest().permitAll();
                 })
                 .formLogin(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
+                .headers().disable()
                 .build();
         //or return http.build();
     }
