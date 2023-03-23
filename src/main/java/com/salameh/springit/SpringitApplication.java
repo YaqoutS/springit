@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@EnableJpaAuditing
 public class SpringitApplication {
 
     private static final Logger log = LoggerFactory.getLogger(SpringitApplication.class);

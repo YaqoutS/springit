@@ -1,16 +1,30 @@
 package com.salameh.springit.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     public SecurityConfiguration(UserDetailsServiceImpl userDetailsService) {
@@ -19,32 +33,38 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
-                //.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers(EndpointRequest.to("info")).permitAll();
+                    auth.requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority("ACTUATOR");
+                    auth.requestMatchers("/actuator/").hasAuthority("ACTUATOR");
+                    auth.requestMatchers("/link/submit").hasAuthority("USER");
+                    auth.requestMatchers("/link/**").permitAll();
                     auth.requestMatchers("/").permitAll();
-                    auth.requestMatchers("/link/submit").hasRole("ADMIN");
-                    //auth.requestMatchers("/resources/**").permitAll();
-                    //auth.requestMatchers("/css/**", "/js/**", "images/**", "/libs.bootstrap/js/**", "/libs.bootstrap/css/**", "/templates/link/**",  "/templates/layouts/**").permitAll();
-                    //auth.requestMatchers("/css/**").permitAll(); //this enhanced the situation but still ..
-                    //auth.requestMatchers("/*.css").permitAll();
+                    auth.requestMatchers("/h2-console/**").permitAll();
                     auth.anyRequest().permitAll();
                 })
-                .formLogin(Customizer.withDefaults())
-                .build();
-        //or return http.build();
+                .formLogin(form -> form.loginPage("/login").permitAll()).userDetailsService(userDetailsService)
+//                .csrf(csrf -> csrf.disable()) // To be able to see the h2 database, we need to disable csrf. But in production we need it to be enabled to prevent csrf attack.
+//                .headers().disable()
+                .build();         //or return http.build();
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        boolean securityDebug = false;
-        return (web) -> web.debug(securityDebug)
-                .ignoring()
-                .requestMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico");
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-    }
+
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails user =
+//                User.withDefaultPasswordEncoder()
+//                        .username("user@gmail.com")
+//                        .password("password")
+//                        .roles("USER")
+//                        .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
 
 }
