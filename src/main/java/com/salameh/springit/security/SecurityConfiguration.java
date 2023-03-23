@@ -21,10 +21,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
-    @Autowired
+    //@Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     public SecurityConfiguration(UserDetailsServiceImpl userDetailsService) {
@@ -35,36 +35,18 @@ public class SecurityConfiguration {
         return http
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(EndpointRequest.to("info")).permitAll();
-                    auth.requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority("ACTUATOR");
-                    auth.requestMatchers("/actuator/").hasAuthority("ACTUATOR");
-                    auth.requestMatchers("/link/submit").hasAuthority("USER");
+                    auth.requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ACTUATOR");
+                    auth.requestMatchers("/actuator/").hasRole("ACTUATOR");
+                    auth.requestMatchers("/link/submit").hasRole("USER");
                     auth.requestMatchers("/link/**").permitAll();
                     auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/h2-console/**").permitAll();
                     auth.anyRequest().permitAll();
                 })
                 .formLogin(form -> form.loginPage("/login").permitAll()).userDetailsService(userDetailsService)
-//                .csrf(csrf -> csrf.disable()) // To be able to see the h2 database, we need to disable csrf. But in production we need it to be enabled to prevent csrf attack.
-//                .headers().disable()
+                .csrf(csrf -> csrf.disable()) // To be able to see the h2 database, we need to disable csrf. But in production we need it to be enabled to prevent csrf attack.
+                .headers().disable()
                 .build();         //or return http.build();
     }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user@gmail.com")
-//                        .password("password")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
 
 }
