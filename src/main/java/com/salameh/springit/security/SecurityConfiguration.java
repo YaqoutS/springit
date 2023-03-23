@@ -57,9 +57,8 @@ public class SecurityConfiguration {
 //                )
                 .rememberMe((remember) -> remember
                         .rememberMeServices(rememberMeServices))
-
-//                .csrf(csrf -> csrf.disable()) // To be able to see the h2 database, we need to disable csrf. But in production we need it to be enabled to prevent csrf attack.
-//                .headers().disable()
+                .csrf(csrf -> csrf.disable()) // To be able to see the h2 database, we need to disable csrf. But in production we need it to be enabled to prevent csrf attack.
+                .headers().disable()
                 .build();         //or return http.build();
     }
 
