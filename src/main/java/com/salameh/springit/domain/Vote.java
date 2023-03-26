@@ -3,6 +3,7 @@ package com.salameh.springit.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Entity
@@ -16,7 +17,11 @@ public class Vote extends Auditable{
     @GeneratedValue
     private Long id;
     @NonNull
-    private int vote;
+    private short direction;
+    @NonNull
+    @ManyToOne
+    private Link link;
+
 
     // user
     // link

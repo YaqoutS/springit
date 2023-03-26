@@ -39,6 +39,10 @@ public class Link extends Auditable{
     @OneToMany(mappedBy = "link")
     private List<Comment> comments = new ArrayList<>(); //we initialize it because we don't want it to point to null
 
+    @OneToMany(mappedBy = "link")
+    private List<Vote> votes = new ArrayList<>();
+
+    private int voteCount = 0;
     public void addComment(Comment comment) {
         comments.add(comment);
     }
