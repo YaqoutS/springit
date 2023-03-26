@@ -5,6 +5,7 @@ import com.salameh.springit.domain.Comment;
 import com.salameh.springit.domain.Link;
 import com.salameh.springit.repository.CommentRepository;
 import com.salameh.springit.repository.LinkRepository;
+import com.salameh.springit.service.LinkService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,23 +25,23 @@ public class LinkController {
 
     private static final Logger logger = LoggerFactory.getLogger(LinkController.class);
 
-    private LinkRepository linkRepository;
+    private LinkService linkService;
     private CommentRepository commentRepository;
 
-    public LinkController(LinkRepository linkRepository, CommentRepository commentRepository) {
-        this.linkRepository = linkRepository;
+    public LinkController(LinkService linkService, CommentRepository commentRepository) {
+        this.linkService = linkService;
         this.commentRepository = commentRepository;
     }
 
     @GetMapping("/")
     public String list(Model model) {
-        model.addAttribute("links", linkRepository.findAll());
+        model.addAttribute("links", linkService.findAll());
         return "link/list";
     }
 
     @GetMapping("/link/{id}")
     public String read(@PathVariable Long id,Model model) {
-        Optional<Link> link = linkRepository.findById(id);
+        Optional<Link> link = linkService.findById(id);
         if( link.isPresent() ) {
             Link currentLink = link.get();
             Comment comment = new Comment();
@@ -67,7 +68,7 @@ public class LinkController {
             model.addAttribute("link", link);
             return "link/submit";
         } else {
-            linkRepository.save(link);
+            linkService.save(link);
             logger.info("New link was saved successfully");
             redirectAttributes
                     .addAttribute("id", link.getId())
