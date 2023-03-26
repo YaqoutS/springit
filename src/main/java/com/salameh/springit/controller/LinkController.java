@@ -5,6 +5,7 @@ import com.salameh.springit.domain.Comment;
 import com.salameh.springit.domain.Link;
 import com.salameh.springit.repository.CommentRepository;
 import com.salameh.springit.repository.LinkRepository;
+import com.salameh.springit.service.CommentService;
 import com.salameh.springit.service.LinkService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -26,11 +27,11 @@ public class LinkController {
     private static final Logger logger = LoggerFactory.getLogger(LinkController.class);
 
     private LinkService linkService;
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
-    public LinkController(LinkService linkService, CommentRepository commentRepository) {
+    public LinkController(LinkService linkService, CommentService commentService) {
         this.linkService = linkService;
-        this.commentRepository = commentRepository;
+        this.commentService = commentService;
     }
 
     @GetMapping("/")
@@ -84,7 +85,7 @@ public class LinkController {
             logger.info("Something went wrong.");
         } else {
             logger.info("New Comment Saved!");
-            commentRepository.save(comment);
+            commentService.save(comment);
         }
         return "redirect:/link/" + comment.getLink().getId();
     }
