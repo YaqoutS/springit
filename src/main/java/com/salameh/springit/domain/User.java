@@ -1,5 +1,6 @@
 package com.salameh.springit.domain;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,6 +44,27 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @NonNull
+    @NotEmpty(message = "You must enter First Name.")
+    private String firstName;
+
+    @NonNull
+    @NotEmpty(message = "You must enter Last Name.")
+    private String lastName;
+
+    @Transient
+    @Setter(AccessLevel.NONE)
+    private String fullName;
+
+    @NonNull
+    @NotEmpty(message = "Please enter alias.")
+    @Column(nullable = false, unique = true)
+    private String alias;
+
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
