@@ -44,7 +44,7 @@ public class AuthController {
             logger.info("Validation errors were found while registering a new user");
             model.addAttribute("user",user);
             model.addAttribute("validationErrors", bindingResult.getAllErrors());
-            return "auth/register?" + bindingResult.getAllErrors();
+            return "auth/register";
         } else {
             User newUser = userService.register(user);
             redirectAttributes

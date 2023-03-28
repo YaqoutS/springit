@@ -1,5 +1,6 @@
 package com.salameh.springit.domain;
 
+import com.salameh.springit.domain.validator.PasswordMatch;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @ToString
 @NoArgsConstructor
 @Table(name="users")
+@PasswordMatch
 public class User implements UserDetails {
 
     @Id
@@ -28,8 +30,8 @@ public class User implements UserDetails {
     @Size(min = 8, max = 30)
     @Column(nullable = false, unique = true)
     private String email;
-    @NonNull
 
+    @NonNull
     @Column(length = 100)
     private String password;
 
@@ -40,14 +42,6 @@ public class User implements UserDetails {
     @NonNull
     @Column(nullable = false)
     private boolean enabled;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id")
-    )
-    private Set<Role> roles = new HashSet<>();
 
     @NonNull
     @NotEmpty(message = "You must enter First Name.")
@@ -66,8 +60,20 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String alias;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
     public String getFullName(){
         return firstName + " " + lastName;
+    }
+
+    public String getConfirmPassword(){
+        return confirmPassword;
     }
 
     @Override
