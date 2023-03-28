@@ -33,6 +33,10 @@ public class User implements UserDetails {
     @Column(length = 100)
     private String password;
 
+    @Transient
+    @NotEmpty(message = "Please enter Password Confirmation.")
+    private String confirmPassword;
+
     @NonNull
     @Column(nullable = false)
     private boolean enabled;
