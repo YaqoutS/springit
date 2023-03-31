@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserService {
 
@@ -15,10 +17,12 @@ public class UserService {
     private final RoleService roleService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+    private final MailService mailService;
 
-    public UserService(RoleService roleService, UserRepository userRepository) {
+    public UserService(RoleService roleService, UserRepository userRepository, MailService mailService) {
         this.roleService = roleService;
         this.userRepository = userRepository;
+        this.mailService = mailService;
         encoder = new BCryptPasswordEncoder(); // it is better to pass that in as a bean managed by spring instead of creating a new instance
     }
 
@@ -28,7 +32,7 @@ public class UserService {
         user.setPassword(secret);
         user.setConfirmPassword(secret);
         user.addRole(roleService.findByName("ROLE_USER"));
-        //user.setActivationCode(UUID.randomUUID().toString());
+        user.setActivationCode(UUID.randomUUID().toString());
         save(user);
         sendActivationEmail(user);
         return user;
@@ -39,7 +43,11 @@ public class UserService {
     }
 
     private void sendActivationEmail(User user) {
+        mailService.sendActivationEmail(user);
+    }
 
+    public void sendWelcomeEmail(User user) {
+        mailService.sendWelcomeEmail(user);
     }
 
     @Transactional
