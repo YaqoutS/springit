@@ -78,6 +78,9 @@ public class User implements UserDetails {
         return confirmPassword;
     }
 
+    @OneToMany(mappedBy = "user")
+    private List<Link> links = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());

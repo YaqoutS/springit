@@ -3,6 +3,7 @@ package com.salameh.springit.controller;
 
 import com.salameh.springit.domain.Comment;
 import com.salameh.springit.domain.Link;
+import com.salameh.springit.domain.User;
 import com.salameh.springit.repository.CommentRepository;
 import com.salameh.springit.repository.LinkRepository;
 import com.salameh.springit.service.CommentService;
@@ -41,10 +42,11 @@ public class LinkController {
     }
 
     @GetMapping("/link/{id}")
-    public String read(@PathVariable Long id,Model model) {
+    public String read(@PathVariable Long id, Model model, User user) {
         Optional<Link> link = linkService.findById(id);
         if( link.isPresent() ) {
             Link currentLink = link.get();
+            currentLink.setUser(user);
             Comment comment = new Comment();
             comment.setLink(currentLink);
             model.addAttribute("comment",comment);
